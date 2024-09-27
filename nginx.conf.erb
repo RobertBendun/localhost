@@ -1,0 +1,48 @@
+worker_processes 1;
+user <%= `whoami` %>;
+
+events {
+	worker_connections 256;
+}
+
+<%
+# Arch: find what documentation packages you don't have installed:
+# comm -2 <(pacman -Q | awk '{print $1}' | sort) <(comm -12 <(pacman -Q | awk '{print $1 "-docs"}' | sort) <(pacman -Ssq | sort))
+load 'docs.rb'
+%>
+
+http {
+  server {
+    server_name localhost;
+		access_log ./access.log;
+		error_log ./error.log;
+		charset utf-8;
+		include /opt/openresty/nginx/conf/mime.types;
+		listen 127.0.0.1:80;
+    location / {
+      root .;
+    }
+
+  }
+
+<% for d in $docs do %>
+	server {
+    server_name <%= d[:prefix] %>.localhost;
+
+		access_log ./access.log;
+		error_log ./error.log;
+		charset utf-8;
+		include /opt/openresty/nginx/conf/mime.types;
+		listen 127.0.0.1:80;
+
+    location / {
+      root <%= d[:root] %>;
+      <% if d[:autoindex] %> autoindex on; <% end %>
+
+      <% if d.key? :index %>
+        index <%= d[:index] %>;
+      <% end %>
+		}
+  }
+<% end %>
+}
