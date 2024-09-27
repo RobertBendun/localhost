@@ -6,6 +6,7 @@ $docs = [
   { prefix: "ffmpeg", root: "/usr/share/doc/ffmpeg/", index: "ffmpeg.html" },
   { prefix: "fmt",    root: "/usr/share/doc/fmt/" },
   { prefix: "python", root: "/usr/share/doc/python/html" },
+  { prefix: "cpp",    root: "/usr/share/doc/cppreference/html/", index_redirect: "/en" }
 ]
 
 begin

@@ -17,7 +17,7 @@ http {
 		access_log ./access.log;
 		error_log ./error.log;
 		charset utf-8;
-		include /opt/openresty/nginx/conf/mime.types;
+		include /etc/nginx/mime.types;
 		listen 127.0.0.1:80;
     location / {
       root .;
@@ -32,7 +32,7 @@ http {
 		access_log ./access.log;
 		error_log ./error.log;
 		charset utf-8;
-		include /opt/openresty/nginx/conf/mime.types;
+		include /etc/nginx/mime.types;
 		listen 127.0.0.1:80;
 
     location / {
@@ -42,7 +42,14 @@ http {
       <% if d.key? :index %>
         index <%= d[:index] %>;
       <% end %>
-		}
+    }
+
+    <% if d.key? :index_redirect %>
+      location = / {
+      return 301 <%= d[:index_redirect] %>;
+      }
+    <% end %>
+
   }
 <% end %>
 }
