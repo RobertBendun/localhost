@@ -1,0 +1,7 @@
+*.log
+*.html
+logs
+*.txt
+*.conf
+serve
+
