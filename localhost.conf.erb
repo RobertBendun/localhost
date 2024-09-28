@@ -1,0 +1,47 @@
+<% load 'docs.rb' %>
+
+server {
+  server_name localhost;
+  access_log ./access.log;
+  error_log ./error.log;
+  charset utf-8;
+  include /etc/nginx/mime.types;
+  listen 127.0.0.1:80;
+  location / {
+    root /usr/share/nginx/html/;
+  }
+}
+
+<% for d in $docs do %>
+server {
+  server_name <%= d[:prefix] %>.localhost;
+
+  access_log ./access.log;
+  error_log ./error.log;
+  charset utf-8;
+  include /etc/nginx/mime.types;
+  listen 127.0.0.1:80;
+
+  location / {
+    <% if d.key? :root %>
+
+      root <%= d[:root] %>;
+      <% if d[:autoindex] %> autoindex on; <% end %>
+
+      <% if d.key? :index %>
+        index <%= d[:index] %>;
+      <% end %>
+
+    <% elsif d.key? :proxy %>
+      proxy_pass http://127.0.0.1:6060;
+    <% end %>
+  }
+
+  <% if d.key? :index_redirect %>
+    location = / {
+    return 301 <%= d[:index_redirect] %>;
+    }
+  <% end %>
+
+}
+<% end %>

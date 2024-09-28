@@ -6,7 +6,8 @@ $docs = [
   { prefix: "ffmpeg", root: "/usr/share/doc/ffmpeg/", index: "ffmpeg.html" },
   { prefix: "fmt",    root: "/usr/share/doc/fmt/" },
   { prefix: "python", root: "/usr/share/doc/python/html" },
-  { prefix: "cpp",    root: "/usr/share/doc/cppreference/html/", index_redirect: "/en" }
+  { prefix: "cpp",    root: "/usr/share/doc/cppreference/html/", index_redirect: "/en" },
+  { prefix: "go",     proxy: "http://localhost:6060" },
 ]
 
 begin
@@ -17,7 +18,8 @@ rescue
 end
 
 $docs = $docs.filter do |doc|
-  next true if File.exists? doc[:root]
+  next true if not doc.key? :root
+  next true if File.exist? doc[:root]
   STDERR.puts "skipping #{doc[:prefix]}, root #{doc[:root]} not found"
   next false
 end.sort_by do |d| d[:prefix] end
